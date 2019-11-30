@@ -1,0 +1,8 @@
+name: Social auth google api
+type: module
+description: 'Social auth google api for decoupled system.'
+package: 'Social'
+core: 8.x
+dependencies:
+  - social_auth_google:social_auth_google
+  - drupal:system (>=8.7.0)

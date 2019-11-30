@@ -1,0 +1,8 @@
+social_auth_google_api.login.http:
+  path: '/user/login/google'
+  defaults:
+    _controller: \Drupal\social_auth_google_api\Controller\GoogleUserAuthenticationController::login
+  methods: [POST]
+  requirements:
+    _user_is_logged_in: 'FALSE'
+    _format: 'json'
