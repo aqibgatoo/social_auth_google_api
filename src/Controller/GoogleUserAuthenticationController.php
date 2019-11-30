@@ -4,6 +4,7 @@ namespace Drupal\social_auth_google_api\Controller;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\user\Controller\UserAuthenticationController;
+use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -12,6 +13,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Provides controllers for login, login status and logout via HTTP requests.
  */
 class GoogleUserAuthenticationController extends UserAuthenticationController {
+
+  /**
+   * Guzzle\Client instance.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected $httpClient;
 
   /**
    * The user manager.
@@ -40,8 +48,13 @@ class GoogleUserAuthenticationController extends UserAuthenticationController {
     $id_token = $credentials['id_token'];
 
     // Get user info from google by id_token.
-    $response = \Drupal::httpClient()
-      ->get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" . $id_token);
+    try {
+      $response = $this->httpClient()
+        ->request('GET', "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" . $id_token);
+    }
+    catch (RequestException $e) {
+      throw new BadRequestHttpException($e->getMessage());
+    }
 
     if ($response->getStatusCode() == 200) {
       $response_body_json = (string) $response->getBody();
@@ -68,6 +81,20 @@ class GoogleUserAuthenticationController extends UserAuthenticationController {
         ->get('social_auth_decoupled.user_manager');
     }
     return $this->userManager;
+  }
+
+  /**
+   * Gets the 'http_client' service.
+   *
+   * @return \GuzzleHttp\Client
+   *   The 'http_client' service.
+   */
+  public function httpClient() {
+    if (!isset($this->httpClient)) {
+      $this->httpClient = \Drupal::getContainer()
+        ->get('http_client');
+    }
+    return $this->httpClient;
   }
 
 }
