@@ -76,7 +76,7 @@ class GoogleUserAuthenticationController extends UserAuthenticationController {
    *   The social_auth_decoupled.user_manager.
    */
   public function socialAuthDecoupledUserManager() {
-    if (!isset($this->usrManager)) {
+    if (!isset($this->userManager)) {
       $this->userManager = \Drupal::getContainer()
         ->get('social_auth_decoupled.user_manager');
     }
