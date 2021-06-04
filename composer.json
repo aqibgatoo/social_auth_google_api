@@ -1,5 +1,5 @@
 {
-    "name": "drupal/social_auth_google_api",
+    "name": "aqibgatoo/social_auth_google_api",
     "type": "drupal-module",
     "description": "Social auth google api.",
     "homepage": "https://www.drupal.org/project/social_auth_google_api",
